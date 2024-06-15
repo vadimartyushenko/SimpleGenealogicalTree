@@ -7,7 +7,7 @@ public class DbSchema
 {
     const int VERSION = 1;
 
-    //record Setting(string Key, string Value);
+    record Setting(string Key, string Value);
 
     public static void Update(SQLiteConnection connection)
     {
@@ -26,7 +26,11 @@ public class DbSchema
                     Name           TEXT    NOT NULL,
                     Surname        TEXT    NOT NULL,
                     BirthDateTicks INTEGER NOT NULL,
+                    FatherId       INTEGER REFERENCES Member (Id),
+                    GrandfatherId  INTEGER REFERENCES Member (Id),
+                    GgrandfatherId INTEGER REFERENCES Member (Id)
                 );");
+            connection.Insert(new Setting("SchemaVersion", VERSION.ToString()));
         }
     }
 }
