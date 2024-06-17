@@ -25,7 +25,7 @@ public class DbSchema
                                            NOT NULL,
                     Name           TEXT    NOT NULL,
                     Surname        TEXT    NOT NULL,
-                    BirthDateTicks INTEGER NOT NULL,
+                    BirthDayNumber INTEGER NOT NULL,
                     FatherId       INTEGER REFERENCES Member (Id),
                     GrandfatherId  INTEGER REFERENCES Member (Id),
                     GgrandfatherId INTEGER REFERENCES Member (Id)
