@@ -25,6 +25,12 @@ public class DbConnector
         DbSchema.Update(connection);
     }
 
+    public List<Member> FindGgchildren(long ggrandfatherId)
+    {
+        using var connection = new SQLiteConnection(_connectionString).EnsureOpen();
+        return connection.Query<Member>(x => x.GgrandfatherId == ggrandfatherId).AsList();
+    }
+
     // Generalized interface for CRUD operations
     public List<T> GetAllEntities<T>() where T : Entity
     {
@@ -45,6 +51,20 @@ public class DbConnector
         try{
             entity.Id = connection.Insert<T, long>(entity);
             return entity;
+        } catch (SQLiteException e) {
+            if (e.Message.Contains("constraint failed"))
+                throw new ConstraintFailedException(e.Message);
+            throw;
+        }
+    }
+
+    public void DeleteEntity<T>(int id) where T : Entity
+    {
+        using var connection = new SQLiteConnection(_connectionString).EnsureOpen();
+        try {
+            var removed = connection.Delete<T>(x => x.Id == id);
+            if (removed == 0)
+                throw new EntityNotFoundException();
         } catch (SQLiteException e) {
             if (e.Message.Contains("constraint failed"))
                 throw new ConstraintFailedException(e.Message);

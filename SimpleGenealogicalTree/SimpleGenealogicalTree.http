@@ -1,6 +1,97 @@
 @SimpleGenealogicalTree_HostAddress = http://localhost:5299
+@Controller = TreeMembers
 
-GET {{SimpleGenealogicalTree_HostAddress}}/weatherforecast/
+# проверка, что БД пустая
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Accept: application/json
+
+###
+
+# создание тестовых данных
+
+POST {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Content-Type: application/json
+{
+  "name": "Ivan",
+  "surname": "Frolov",
+  "birthDate": "1918-11-02"
+}
+###
+POST {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Content-Type: application/json
+{
+  "name": "Jenya",
+  "surname": "Frolov",
+  "birthDate": "1945-06-02",
+  "fatherId": 1
+}
+###
+POST {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Content-Type: application/json
+{
+  "name": "Kolya",
+  "surname": "Frolov",
+  "birthDate": "1966-08-26",
+  "fatherId": 2,
+  "grandfatherId": 1
+}
+###
+POST {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Content-Type: application/json
+{
+  "name": "Petya",
+  "surname": "Frolov",
+  "birthDate": "1990-01-02",
+  "fatherId": 3,
+  "grandfatherId": 2,
+  "ggrandfatherId": 1
+}
+###
+POST {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Content-Type: application/json
+{
+  "name": "Olesya",
+  "surname": "Frolova",
+  "birthDate": "2001-06-26",
+  "fatherId": 3,
+  "grandfatherId": 2,
+  "ggrandfatherId": 1
+}
+
+###
+
+# Получение списка людей
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/
+Accept: application/json
+
+###
+
+# Получение информации о человеке по идентификатору из БД
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/4
+Accept: application/json
+
+###
+
+# Получение Деда по идентификатору человека из БД
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/grandfather/byid/3
+Accept: application/json
+
+###
+
+# Получение Прадеда по идентификатору человека из БД
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/ggrandfather/byid/4
+Accept: application/json
+
+###
+
+# Получение  списка Правнуков по идентификатору человека из БД
+GET {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/ggchildren/byid/1
+Accept: application/json
+
+###
+
+# Удаление информации о человеке по идентификатору из БД
+DELETE {{SimpleGenealogicalTree_HostAddress}}/{{Controller}}/4
 Accept: application/json
 
 ###

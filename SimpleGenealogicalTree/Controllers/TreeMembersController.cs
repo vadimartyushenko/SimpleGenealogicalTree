@@ -46,6 +46,29 @@ public class TreeMembersController : ControllerBase
             return Ok(new EmptyResult());
     }
 
+    // GET api/<TreeMemberController>/ggrandfather/byid/5
+    [HttpGet("ggrandfather/byid/{id}")]
+    public ActionResult<MemberDto> GetGgrandfather(int id)
+    {
+        var member = _dbConnector.GetEntity<Member>(id) ?? throw new EntityNotFoundException();
+        if (member.GgrandfatherId.HasValue)
+        {
+            var result = _dbConnector.GetEntity<Member>(member.GgrandfatherId.Value)?.ToDto();
+            return Ok(result);
+        }
+        else
+            return Ok(new EmptyResult());
+    }
+
+    // GET: api/<TreeMemberController>/ggchildren
+    [HttpGet("ggchildren/byid/{id}")]
+    public ActionResult<List<MemberDto>> GetGgchildrenList(int id)
+    {
+        var member = _dbConnector.GetEntity<Member>(id) ?? throw new EntityNotFoundException();
+        var items = _dbConnector.FindGgchildren(member.Id).Select(x => x.ToDto());
+        return Ok(items);
+    }
+
     // POST api/<TreeMemberController>
     [HttpPost]
     public IActionResult Post([FromBody] MemberDto dto)
@@ -63,15 +86,11 @@ public class TreeMembersController : ControllerBase
         return CreatedAtAction(nameof(Get), new { item.Id }, item);
     }
 
-    // PUT api/<TreeMemberController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
     // DELETE api/<TreeMemberController>/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public IActionResult Delete(int id)
     {
+        _dbConnector.DeleteEntity<Member>(id);
+        return NoContent();
     }
 }
